@@ -1,0 +1,28 @@
+import materias.*
+import example.*
+
+
+describe "inscripcion"{
+
+test "verificacion" {
+	
+
+	var programacion = new Materia(creditosDeLaMateria = 20 , creditosNecesario = 0, materiasNecesariaParaCursar = [] , notaDelEstudiante = 0 )
+	var objetos1 = new Materia(creditosDeLaMateria = 20 , creditosNecesario = 0, materiasNecesariaParaCursar = [] , notaDelEstudiante = 0 )
+	var matematica = new Materia(creditosDeLaMateria = 20 , creditosNecesario = 0, materiasNecesariaParaCursar = [] , notaDelEstudiante = 0 )
+	var objetos2 = new Materia(creditosDeLaMateria = 50 , creditosNecesario = 0, materiasNecesariaParaCursar = [objetos1,matematica] , notaDelEstudiante = 0 )
+	 
+	var juan= new Estudiante(materiasAprobadas = [] , materiasQueCursa = [] , creditos = 0 )
+	var matias= new Estudiante(materiasAprobadas = [] , materiasQueCursa = [] , creditos = 0 )
+	
+	juan.InscribirseA(programacion)
+	assert.equals(true,juan.estaCursandoLa(programacion))
+	assert.equals(0,juan.creditosHastaAhora())
+	assert.equals(false,objetos2.aproboLasMeterias(juan))
+	assert.equals(false,juan.puedeInscribirseA(objetos2))
+	programacion.pasarNota(8)
+	
+
+}
+
+}
