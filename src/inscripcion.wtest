@@ -1,28 +1,75 @@
 import materias.*
 import example.*
+import curso.*
 
 
 describe "inscripcion"{
 
 test "verificacion" {
 	
-
-	var programacion = new Materia(creditosDeLaMateria = 20 , creditosNecesario = 0, materiasNecesariaParaCursar = [] , notaDelEstudiante = 0 )
-	var objetos1 = new Materia(creditosDeLaMateria = 20 , creditosNecesario = 0, materiasNecesariaParaCursar = [] , notaDelEstudiante = 0 )
-	var matematica = new Materia(creditosDeLaMateria = 20 , creditosNecesario = 0, materiasNecesariaParaCursar = [] , notaDelEstudiante = 0 )
-	var objetos2 = new Materia(creditosDeLaMateria = 50 , creditosNecesario = 0, materiasNecesariaParaCursar = [objetos1,matematica] , notaDelEstudiante = 0 )
+	var programacion =  new Materia(cupos = 2,anio = 1,creditosDeLaMateria = 20, notaDelEstudiante = 0,listaDeEsperra = [],curso = [] )
+	
+	var programacion2 =  new MateriasConNecesidadDeCreditos(creditosNecesarios = 250, cupos = 2,anio = 1,creditosDeLaMateria = 40, notaDelEstudiante = 0,listaDeEsperra = [],curso = [])
+	
+	var objetos1 = new Materia(cupos = 2,anio = 1,creditosDeLaMateria = 90 , notaDelEstudiante = 0,listaDeEsperra = [],curso = [] )
+	
+	var matematica = new Materia(cupos = 0,anio = 1,creditosDeLaMateria = 20, notaDelEstudiante = 0,listaDeEsperra = [] ,curso = [])
+	
+	var objetos2 = 
+	 new MateriasCorrelativas(cupos = 2,anio = 1,creditosDeLaMateria = 50, materiasNecesariaParaCursar = [objetos1,matematica] , notaDelEstudiante = 0 ,listaDeEsperra = [],curso = [])
+	
+	var objetos3 = 
+	 new MateriasConAniosNecesarios(cupos = 2,anio = 3,creditosDeLaMateria = 60 , notaDelEstudiante = 0 ,listaDeEsperra = [],curso = [])
+	
+	var matematica2 = new Materia(cupos = 2,anio = 2,creditosDeLaMateria = 80, notaDelEstudiante = 0,listaDeEsperra = [],curso = [])
 	 
-	var juan= new Estudiante(materiasAprobadas = [] , materiasQueCursa = [] , creditos = 0 )
-	var matias= new Estudiante(materiasAprobadas = [] , materiasQueCursa = [] , creditos = 0 )
+	var informatica = new Carrera(lsMaterias = [programacion,objetos1,matematica2,matematica])
+
+	
+	var juan= new Estudiante(materiasAprobadas = [] , materiasQueCursa = [] , creditos = 0 ,carrera = [informatica])
+	var matias= new Estudiante(materiasAprobadas = [matematica] , materiasQueCursa = [programacion] , creditos = 0 ,carrera = [informatica])
+	var maria= new Estudiante(materiasAprobadas = [objetos1,matematica,matematica2] , materiasQueCursa = [] , creditos = 0 ,carrera = [informatica])
+	var fernando= new Estudiante(materiasAprobadas = [programacion,objetos1,matematica2,matematica] , materiasQueCursa = [] , creditos = 0 ,carrera = [informatica])
+	var fernando2= new Estudiante(materiasAprobadas = [objetos2,programacion,objetos1,matematica2,matematica] , materiasQueCursa = [] , creditos = 0 ,carrera = [informatica])
+
+//	var curso1 =  [fernando,fernando2]
+//	var curso2 =  [maria]
 	
 	juan.InscribirseA(programacion)
 	assert.equals(true,juan.estaCursandoLa(programacion))
 	assert.equals(0,juan.creditosHastaAhora())
-	assert.equals(false,objetos2.aproboLasMeterias(juan))
-	assert.equals(false,juan.puedeInscribirseA(objetos2))
-	programacion.pasarNota(8)
-	
+	assert.equals(true,juan.puedeInscribirseA(objetos2))
+	juan.pasarNotaA(programacion,8)
+	juan.creditosAcumulados()
+	assert.equals(programacion,juan.materiasAprobadas())
+	assert.equals(0,juan.creditosHastaAhora())
 
+	assert.equals(false,objetos2.requisitos(juan)) // por MateriasCorrelativas
+	assert.equals(true,objetos2.requisitos(maria))
+
+	assert.equals(false,objetos3.requisitos(matias)) // por MateriasConAniosNecesarios
+	assert.equals(true,objetos3.requisitos(fernando))
+	
+	assert.equals(false,programacion2.requisitos(matias)) // por creditos
+	assert.equals(true,programacion2.requisitos(fernando2))
+
+	assert.equals(2,objetos1.totalCupos())
+	assert.equals([],objetos1.listaDelCurso())
+	objetos1.agregarAlumnoAlCurso(objetos1,matias)
+	assert.equals([matias],objetos1.listaDelCurso())
+	assert.equals(1,objetos1.totalCupos())
+	assert.equals([],objetos1.LsDeEspera())
+	
+	assert.equals(0,matematica.totalCupos())
+	assert.equals([],matematica.listaDelCurso())
+	objetos1.agregarAlumnoAlCurso(matematica,matias)
+	assert.equals([],matematica.listaDelCurso())
+//	assert.equals([matias],matematica.LsDeEspera()) 
+	
+	
+	assert.equals([programacion,objetos1,matematica2,matematica],matias.materiasDeLaCarrera())
+	assert.equals([matematica],matias.listaMateriasAprobadas())
+	
 }
 
 }

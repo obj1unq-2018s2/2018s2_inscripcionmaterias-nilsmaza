@@ -1,13 +1,19 @@
 import materias.*
+import curso.*
 
 class Estudiante {
 	
-	var property materiasAprobadas = []
-	var property materiasQueCursa = []
-	var property creditos = 0
+	var  materiasAprobadas = []
+	var  materiasQueCursa = []
+	var  creditos = 0
+	var carrera = []
+	
+	method carrera(){
+		return carrera.first()
+	}
 	
 	method puedeInscribirseA(materia){
-		return not materiasAprobadas.contains{materia} and self.estaCursandoLa(materia)
+		return not materiasAprobadas.contains{materia} and not self.estaCursandoLa(materia)
 	}
 	
 	method esNuevoIngresante(){
@@ -19,31 +25,46 @@ class Estudiante {
 	}
 	
 	method creditosAcumulados(){
-		creditos = materiasAprobadas.sum{elem => elem.creditos()}
+		return materiasAprobadas.sum{elem => elem.creditos()}
 	}
 	
 	method creditosHastaAhora(){
 		return creditos
 	}
 	
-	method materiasAprovadas(){
+	method listaMateriasAprobadas(){
 		return materiasAprobadas
 	}
-	
+
 	method InscribirseA(materia){
 		if(self.esNuevoIngresante()){
 			 materiasQueCursa.add(materia)
 		}
+		
 	}
 	
-	method EliminarInscripcion(materia){
-		return materiasQueCursa.remove(materia)
+	method materiasDeLaCarrera(){
+		return self.carrera().listaDeMaterias()
+	}
+	
+	method pasarNotaA(materia,nota){
+		return materiasQueCursa.find{ elem => elem == materia }.pasarNota(nota)
+	}
+	
+	method materiasAprobadas(){
+		return materiasQueCursa.find{ elem => elem.estaAprovado() }
+			 
 	}
 	
 	method pasarMateriasAprobadas(){
-		return	materiasAprobadas.add{elem => elem.estaAprovado()}
+		var mat = self.materiasAprobadas()
+		 materiasAprobadas.add{mat}
+		 materiasQueCursa.remove(mat)
 	}
 	
+	method tieneAprobadasUnaLista(materias) {
+		
+		return materiasAprobadas.map{mat => mat.materia()}.asSet()
+	}	
 	
-
 }
